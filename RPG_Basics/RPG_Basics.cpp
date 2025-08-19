@@ -123,7 +123,7 @@ bool tryMove(Player& p, Command cmd, const Tile map[MAP_HEIGHT][MAP_WIDTH]) {
     return true;
 }
 
-bool blockSight(Tile t) {
+bool blocksSight(Tile t) {
     return t == Tile::Wall;
 }
 
@@ -142,7 +142,7 @@ bool hasLineOfSight(const Tile map[MAP_HEIGHT][MAP_WIDTH], int x0, int y0, int x
 
     while (true) {
         if (!(x == x0 && y == y0)) {
-            if (blockSight(map[y][x])) {
+            if (blocksSight(map[y][x])) {
                 if (!(x == x1 && y == y1)) return false;
             }
         }
