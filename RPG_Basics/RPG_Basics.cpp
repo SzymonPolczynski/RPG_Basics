@@ -22,6 +22,17 @@ enum class Command {
     Up, Down, Left, Right, Quit, None
 };
 
+// ====== MAP DATA ======
+// 0 = floor, 1 = wall, 2 = trap
+
+int map[MAP_HEIGHT][MAP_WIDTH] = {
+    {0, 0, 1, 0, 0},
+    {0, 0, 1, 0, 2},
+    {0, 0, 0, 0, 0},
+    {1, 1, 0, 1, 0},
+    {0, 0, 0, 0, 0}
+};
+
 // ====== DECLARATIONS ======
 
 void greet(Player& p);
@@ -43,6 +54,8 @@ void drawMap(const Player& p) {
     for (int row = 0; row < MAP_HEIGHT; ++row) {
         for (int col = 0; col < MAP_WIDTH; ++col) {
             if (row == p.y && col == p.x) std::cout << '@';
+            else if (map[row][col] == 1)  std::cout << '#';
+            else if (map[row][col] == 2)  std::cout << 'T';
             else                          std::cout << '.';
         }
         std::cout << '\n';
@@ -75,10 +88,26 @@ bool tryMove(Player& p, Command cmd) {
     if (cmd == Command::Left) nx -= 1;
     if (cmd == Command::Right) nx += 1;
 
+    // MAP BOUNDARIES
     if (nx < 0 || nx >= MAP_WIDTH) return false;
     if (ny < 0 || ny >= MAP_HEIGHT) return false;
 
-    p.x = nx; p.y = ny;
+    // WALL COLLISION
+    if (map[ny][nx] == 1) {
+        std::cout << "Bump! You hit a wall.\n";
+        return false;
+    }
+
+    // ALLOW MOVEMENT
+    p.x = nx;
+    p.y = ny;
+
+    // TRAP CHECK
+    if (map[p.y][p.x] == 2) {
+        p.hp -= 1;
+        std::cout << "Ouch! You stepped on a trap. HP now: " << p.hp << "\n";
+    }
+
     return true;
 }
 
@@ -87,7 +116,7 @@ int main() {
     Player player{};
     greet(player);
 
-    while (true) {
+    while (player.hp > 0) {
         drawMap(player);
         Command cmd = readCommand();
 
@@ -102,6 +131,6 @@ int main() {
         else        std::cout << "\n";
     }
 
-    std::cout << "Bye!\n";
+    std::cout << "Game over! Thanks for playing.\n";
     return 0;
 }
