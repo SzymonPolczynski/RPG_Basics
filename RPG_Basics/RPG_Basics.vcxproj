@@ -123,7 +123,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="engine.cpp" />
+    <ClCompile Include="fov.cpp" />
+    <ClCompile Include="input.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="map.cpp" />
+    <ClCompile Include="render.cpp" />
     <ClCompile Include="RPG_Basics.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="config.hpp" />
+    <ClInclude Include="engine.hpp" />
+    <ClInclude Include="fov.hpp" />
+    <ClInclude Include="input.hpp" />
+    <ClInclude Include="map.hpp" />
+    <ClInclude Include="render.hpp" />
+    <ClInclude Include="types.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

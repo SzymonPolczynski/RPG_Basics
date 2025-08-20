@@ -1,0 +1,8 @@
+#pragma once
+#include "config.hpp"
+#include "types.hpp"
+
+
+void drawMap(const Player& p,
+			 const bool visible[MAP_HEIGHT][MAP_WIDTH],
+			 const bool explored[MAP_HEIGHT][MAP_WIDTH]);
