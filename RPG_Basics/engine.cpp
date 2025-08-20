@@ -93,3 +93,4 @@ GameState runPlay(Player& p) {
     }
     std::cout << "You died! Game over.\n";
     return GameState::Exit;
+}

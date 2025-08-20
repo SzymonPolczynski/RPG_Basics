@@ -24,22 +24,22 @@ bool applyTileEffect(Player& p, Tile t) {
         return true;
     }
     return false;
+}
 
 char glyphFor(Tile t, bool isVisible, bool isExplored) {
     if (!isExplored) return ' ';
     if (isVisible) {
         switch (t) {
-        case Tile::Floor: return '.';
-        case Tile::Wall: return '#';
-        case Tile::Trap: return 'T';
+            case Tile::Floor: return '.';
+            case Tile::Wall:  return '#';
+            case Tile::Trap:  return 'T';
         }
     }
     else {
-        // GHOSTED (IN FOG OF WAR)
         switch (t) {
-        case Tile::Floor: return ',';
-        case Tile::Wall: return '+';
-        case Tile::Trap: return '^';
+            case Tile::Floor: return ',';
+            case Tile::Wall:  return '+';
+            case Tile::Trap:  return '^';
         }
     }
     return ' ';
