@@ -30,8 +30,8 @@ static std::pair<int, int> deltaFor(Command cmd) {
 
 static bool tryMove(Player& p, Command cmd) {
 	auto [dx, dy] = deltaFor(cmd);
-	int nx = p.x + dx;
-	int ny = p.y + dy;
+	const int nx = p.x + dx;
+	const int ny = p.y + dy;
 
     if (!isWalkable(nx, ny, g_map)) {
         std::cout << "Bump! You can't go there.\n";
@@ -43,10 +43,12 @@ static bool tryMove(Player& p, Command cmd) {
     p.x = nx;
     p.y = ny;
 
+    const bool wasTrap = (cell == Tile::Trap);
+
     applyTileEffect(p, cell);
 
-    if (cell == Tile::Trap) {
-        cell == Tile::Floor;
+    if (wasTrap) {
+        cell = Tile::Floor;
     }
     return true;
 }
