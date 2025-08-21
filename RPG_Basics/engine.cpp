@@ -75,7 +75,7 @@ GameState runMenu(Player& p) {
         }
         else {
             std::cout << "\nUnknown option.";
-            _getch();
+            (void)_getch();
         }
     }
 }
