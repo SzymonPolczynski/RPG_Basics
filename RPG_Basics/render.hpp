@@ -10,3 +10,7 @@ void drawMap(const Player& p,
 			 const bool visible[MAP_HEIGHT][MAP_WIDTH],
 			 const bool explored[MAP_HEIGHT][MAP_WIDTH],
 			 const std::string& status);
+
+void drawInventory(const Player& p,
+				   int cursor,
+				   const std::string& status);

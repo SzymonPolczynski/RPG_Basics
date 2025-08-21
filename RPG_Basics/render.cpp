@@ -80,3 +80,56 @@ void drawMap(const Player& p,
     std::cout << out.str();
     std::cout.flush();
 }
+
+void drawInventory(const Player& p, int cursor, const std::string& status) {
+#ifdef _WIN32
+    {
+        clearScreenAndHome();
+    }
+#endif // _WIN32
+#ifndef _WIN32
+    std::cout << "\x1b[2J\x1b[H";
+#endif // !_WIN32
+
+    std::ostringstream out;
+    out << "===== INVENTORY =====\n";
+
+    auto slotName = [](Slot s)->const char* {
+        switch (s) {
+            case Slot::Head: return "Head";
+            case Slot::Chest: return "Chest";
+            case Slot::Weapon: return "Weapon";
+            case Slot::Shield: return "Shield";
+            case Slot::Boots: return "Boots";
+            case Slot::Ring: return "Ring";
+            case Slot::Amulet: return "Amulet";
+            default: return "?";
+        }
+    };
+
+    out << "[Equipped]\n";
+    for (int i = 0; i < static_cast<int>(Slot::Count); ++i) {
+        const auto& opt = p.inv.equipped[static_cast<size_t>(i)];
+        out << " - " << slotName(static_cast<Slot>(i)) << ": ";
+        if (opt) out << opt->name;
+        else out << "(empty)";
+        out << "\n";
+    }
+
+    out << "\n[Backpack]  (E=Equip, U=Unequip slot by number, I=Back)\n";
+    for (int i = 0; i < static_cast<int>(p.inv.backpack.size()); ++i) {
+        const auto& it = p.inv.backpack[i];
+        out << (i == cursor ? "> " : "  ");
+        out << i << ") " << it.name << " [";
+        out << slotName(it.slot) << "]";
+        if (it.dmg) out << " dmg+" << it.dmg;
+        if (it.armor) out << " arm+" << it.armor;
+        out << "\n";
+    }
+
+    if (p.inv.backpack.empty()) out << "(Backpack is empty)\n";
+
+    out << "\nStatus: " << status << "\n";
+    std::cout << out.str();
+    std::cout.flush();
+}

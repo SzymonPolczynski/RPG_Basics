@@ -17,6 +17,12 @@ static void greet(Player& p) {
     std::getline(std::cin, p.name);
     if (p.name.empty()) p.name = "Hero";
     std::cout << "Greetings, " << p.name << "! Your journey begins...\n";
+
+    // SAMPLE ITEMS ---> TODO: DELETE LATER
+    p.inv.backpack.push_back(Item{ "Rusty Sword", Slot::Weapon, 1, 0 });
+    p.inv.backpack.push_back(Item{ "Wooden Shield", Slot::Shield, 0, 1 });
+    p.inv.backpack.push_back(Item{ "Cloth Hat", Slot::Head, 0, 1 });
+
 }
 
 static std::pair<int, int> deltaFor(Command cmd) {
@@ -52,6 +58,91 @@ static bool tryMove(Player& p, Command cmd) {
         cell = Tile::Floor;
     }
     return true;
+}
+
+static size_t toIndex(Slot s) { return static_cast<size_t>(s); }
+
+static std::string equipFromBackpack(Player& p, int backpackIndex) {
+    if (backpackIndex < 0 || backpackIndex >= static_cast<int>(p.inv.backpack.size()))
+        return "No item at that index.";
+
+    Item it = p.inv.backpack[static_cast<size_t>(backpackIndex)];
+    size_t idx = toIndex(it.slot);
+
+    if (p.inv.equipped[idx]) {
+        p.inv.backpack.push_back(*p.inv.equipped[idx]);
+    }
+
+    p.inv.equipped[idx] = it;
+
+    p.inv.backpack.erase(p.inv.backpack.begin() + backpackIndex);
+
+    return "Equipped: " + it.name;
+}
+
+static std::string uneqipSlot(Player& p, int slotNumber) {
+    if (slotNumber < 0 || slotNumber >= static_cast<int>(Slot::Count))
+        return "No such slot.";
+    size_t idx = static_cast<size_t>(slotNumber);
+    if (!p.inv.equipped[idx]) return "Slot already empty.";
+
+    Item it = *p.inv.equipped[idx];
+    p.inv.equipped[idx].reset();
+    p.inv.backpack.push_back(it);
+    return "Unequipped: " + it.name;
+}
+
+static void inventoryLoop(Player& p) {
+    int cursor = 0;
+    std::string status = "Inventory open.";
+
+    auto clampCursor = [&]() {
+        if (p.inv.backpack.empty()) { cursor = 0; return; }
+        if (cursor < 0) cursor = 0;
+        if (cursor >= static_cast<int>(p.inv.backpack.size()))
+            cursor = static_cast<int>(p.inv.backpack.size()) - 1;
+        };
+    clampCursor();
+
+    for (;;) {
+        drawInventory(p, cursor, status);
+        int ch = _getch();
+        if (ch == 224) {
+            int k = _getch();
+            if (k == 72 || k == 75) { cursor--; clampCursor(); }
+            else if (k == 80 || k = 77) { cursor++; clampCursor(); }
+            continue;
+        }
+        switch (ch) {
+            case 'w': case 'W': case 'a': case 'A': cursor--; clampCursor(); break;
+            case 's': case 'S': case 'd': case 'D': cursor++; clampCursor(); break;
+
+            case 'e': case 'E':
+                status = equipFromBackpack(p, cursor);
+                clampCursor();
+                break;
+
+            case 'u': case 'U': {
+                status = "Press slot number (0-6) to unequip: 0=Head,1=Chest,2=Weapon,3=Shield,4=Boots,5=Ring,6=Amulet";
+                drawInventory(p, cursor, status);
+                int k = _getch();
+                if (k >= '0' && k <= '6') {
+                    status = uneqipSlot(p, k - '0');
+                }
+                else {
+                    status = "Cancelled.";
+                }
+                break;
+            }
+            case 'i': case 'I':
+                return;
+            case 'q': case 'Q':
+                return;
+            default:
+                status = "Use arrows/WASD to move, E to equip, U to unequip by slot, I to return.";
+                break;
+        }
+    }
 }
 
 GameState runMenu(Player& p) {
@@ -110,6 +201,12 @@ GameState runPlay(Player& p) {
             drawMap(p, visible, explored, lastMessage);
             renderShutdown();
             return GameState::Menu;
+        }
+
+        if (cmd == Command::Inventory) {
+            inventoryLoop(p);
+            lastMessage = "Inventory closed";
+            continue;
         }
 
         if (cmd == Command::None) {

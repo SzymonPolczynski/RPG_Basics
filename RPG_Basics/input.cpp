@@ -23,6 +23,7 @@ Command readCommand() {
         case 's': case 'S': return Command::Down;
         case 'a': case 'A': return Command::Left;
         case 'd': case 'D': return Command::Right;
+        case 'i': case 'I': return Command::Inventory;
         case 'q': case 'Q': return Command::Quit;
         default:            return Command::None;
     }
