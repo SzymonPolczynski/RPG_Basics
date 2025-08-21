@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <utility>
 #include <string>
+#include <conio.h>
 #include "engine.hpp"
 #include "input.hpp"
 #include "render.hpp"
@@ -54,7 +55,7 @@ static bool tryMove(Player& p, Command cmd) {
 }
 
 GameState runMenu(Player& p) {
-    while (true) {
+    for (;;) {
         std::cout << "====================\n";
         std::cout << "   ASCII RPG (C++)  \n";
         std::cout << "====================\n";
@@ -62,24 +63,19 @@ GameState runMenu(Player& p) {
         std::cout << "2) Quit\n";
         std::cout << "Choose: ";
 
-        char choice{};
-        if (!(std::cin >> choice)) {
-            std::cin.clear();
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            continue;
-        }
+        int ch = _getch();
 
-        if (choice == '1') {
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        if (ch == '1') {
             p = Player{};
             greet(p);
             return GameState::Play;
         }
-        else if (choice == '2' || choice == 'q' || choice == 'Q') {
+        else if (ch == '2' || ch == 'q' || ch == 'Q') {
             return GameState::Exit;
         }
         else {
-            std::cout << "Unknown option. \n\n";
+            std::cout << "\nUnknown option.";
+            _getch();
         }
     }
 }
