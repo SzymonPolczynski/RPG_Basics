@@ -1,17 +1,24 @@
 #include <iostream>
 #include <limits>
+#include <conio.h>
 #include "input.hpp"
 
 
 Command readCommand() {
-    std::cout << "Command: ";
-    char c{};
-    if (!(std::cin >> c)) {
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        return Command::None;
+    int ch = _getch();
+
+    if (ch == 224) {
+        int k = _getch();
+        switch (k) {
+            case 72: return Command::Up;
+            case 80: return Command::Down;
+            case 75: return Command::Left;
+            case 77: return Command::Right;
+            default: return Command::None;
+        }
     }
-    switch (c) {
+
+    switch (ch) {
         case 'w': case 'W': return Command::Up;
         case 's': case 'S': return Command::Down;
         case 'a': case 'A': return Command::Left;
