@@ -12,8 +12,7 @@ Tile g_map[MAP_HEIGHT][MAP_WIDTH] = {
 };
 
 bool isWalkable(int nx, int ny, const Tile map[MAP_HEIGHT][MAP_WIDTH]) {
-    if (nx < 0 || nx >= MAP_WIDTH) return false;
-    if (ny < 0 || ny >= MAP_HEIGHT) return false;
+    if (!inBounds(nx, ny)) return false;
     return map[ny][nx] != Tile::Wall;
 }
 

@@ -5,7 +5,7 @@
 
 enum class Command { Up, Down, Left, Right, Quit, None };
 enum class Tile { Floor = 0, Wall = 1, Trap = 2 };
-enum GameState { Menu, Play, Exit };
+enum class GameState { Menu, Play, Exit };
 
 struct Player {
     std::string name{};

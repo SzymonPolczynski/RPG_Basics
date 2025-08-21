@@ -12,11 +12,11 @@ Command readCommand() {
         return Command::None;
     }
     switch (c) {
-    case 'w': case 'W': return Command::Up;
-    case 's': case 'S': return Command::Down;
-    case 'a': case 'A': return Command::Left;
-    case 'd': case 'D': return Command::Right;
-    case 'q': case 'Q': return Command::Quit;
-    default:            return Command::None;
+        case 'w': case 'W': return Command::Up;
+        case 's': case 'S': return Command::Down;
+        case 'a': case 'A': return Command::Left;
+        case 'd': case 'D': return Command::Right;
+        case 'q': case 'Q': return Command::Quit;
+        default:            return Command::None;
     }
 }

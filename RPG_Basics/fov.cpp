@@ -6,8 +6,7 @@
 bool blocksSight(Tile t) { return t == Tile::Wall; }
 
 bool hasLineOfSight(const Tile map[MAP_HEIGHT][MAP_WIDTH], int x0, int y0, int x1, int y1) {
-    if (x0 < 0 || x0 >= MAP_WIDTH || y0 < 0 || y0 >= MAP_HEIGHT) return false;
-    if (x1 < 0 || x1 >= MAP_WIDTH || y1 < 0 || y1 >= MAP_HEIGHT) return false;
+	if (!inBounds(x0, y0) || !inBounds(x1, y1)) return false;
 
     int dx = std::abs(x1 - x0);
     int sx = (x0 < x1) ? 1 : -1;

@@ -1,6 +1,8 @@
 #include <iostream>
 #include <limits>
 #include <algorithm>
+#include <utility>
+#include <string>
 #include "engine.hpp"
 #include "input.hpp"
 #include "render.hpp"
@@ -16,22 +18,36 @@ static void greet(Player& p) {
     std::cout << "Greetings, " << p.name << "! Your journey begins...\n";
 }
 
+static std::pair<int, int> deltaFor(Command cmd) {
+    switch (cmd) {
+	    case Command::Up: return { 0, -1 };
+	    case Command::Down: return { 0, 1 };
+	    case Command::Left: return { -1, 0 };
+	    case Command::Right: return { 1, 0 };
+	    default: return { 0, 0 };
+    }
+}
+
 static bool tryMove(Player& p, Command cmd) {
-    int nx = p.x, ny = p.y;
-    if (cmd == Command::Up) ny -= 1;
-    if (cmd == Command::Down) ny += 1;
-    if (cmd == Command::Left) nx -= 1;
-    if (cmd == Command::Right) nx += 1;
+	auto [dx, dy] = deltaFor(cmd);
+	int nx = p.x + dx;
+	int ny = p.y + dy;
 
     if (!isWalkable(nx, ny, g_map)) {
         std::cout << "Bump! You can't go there.\n";
         return false;
     }
 
+    Tile& cell = g_map[ny][nx];
+
     p.x = nx;
     p.y = ny;
 
-    applyTileEffect(p, g_map[p.y][p.x]);
+    applyTileEffect(p, cell);
+
+    if (cell == Tile::Trap) {
+        cell == Tile::Floor;
+    }
     return true;
 }
 
@@ -69,6 +85,7 @@ GameState runMenu(Player& p) {
 GameState runPlay(Player& p) {
     bool visible[MAP_HEIGHT][MAP_WIDTH] = {};
     bool explored[MAP_HEIGHT][MAP_WIDTH] = {};
+    std::string lastMessage = "Ready.";
 
     while (p.hp > 0) {
         computeVisibility(p, g_map, visible);
@@ -76,20 +93,28 @@ GameState runPlay(Player& p) {
             for (int c = 0; c < MAP_WIDTH; ++c)
                 if (visible[r][c]) explored[r][c] = true;
 
-        drawMap(p, visible, explored);
+        drawMap(p, visible, explored, lastMessage);
 
         Command cmd = readCommand();
         if (cmd == Command::Quit) {
-            std::cout << "Back to menu...\n\n";
+            lastMessage = "Back to menu...";
             return GameState::Menu;
         }
         if (cmd == Command::None) {
-            std::cout << "Unknown command.\n\n";
+            lastMessage = "Unknown command.";
             continue;
         }
 
-        (void)tryMove(p, cmd);
-        std::cout << "\n";
+        bool moved = tryMove(p, cmd);
+        if (!moved) {
+            lastMessage = "Bump! You can't go there.";
+        }
+        else if (g_map[p.y][p.x] == Tile::Floor) {
+            lastMessage = "Moved.";
+        }
+        else {
+            lastMessage = "Action resolved.";
+        }
     }
     std::cout << "You died! Game over.\n";
     return GameState::Exit;
