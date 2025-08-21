@@ -1,6 +1,9 @@
 #include <algorithm>
 #include <cstdlib>
+#include "config.hpp"
 #include "fov.hpp"
+#include "map.hpp"
+#include "types.hpp"
 
 
 bool blocksSight(Tile t) { return t == Tile::Wall; }

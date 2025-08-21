@@ -92,7 +92,7 @@ GameState runPlay(Player& p) {
     std::string lastMessage = "Ready.";
 
     for (;;) {
-        computeVisibility(p.x, p.y, visible);
+        computeVisibility(p, g_map, visible);
         for (int y = 0; y < MAP_HEIGHT; ++y) {
             for (int x = 0; x < MAP_WIDTH; ++x) {
                 if (visible[y][x]) explored[y][x] = true;
