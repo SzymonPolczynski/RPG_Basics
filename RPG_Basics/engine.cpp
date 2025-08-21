@@ -110,7 +110,7 @@ static void inventoryLoop(Player& p) {
         if (ch == 224) {
             int k = _getch();
             if (k == 72 || k == 75) { cursor--; clampCursor(); }
-            else if (k == 80 || k = 77) { cursor++; clampCursor(); }
+            else if (k == 80 || k == 77) { cursor++; clampCursor(); }
             continue;
         }
         switch (ch) {
