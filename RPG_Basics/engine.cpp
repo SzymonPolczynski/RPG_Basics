@@ -85,39 +85,48 @@ GameState runMenu(Player& p) {
 }
 
 GameState runPlay(Player& p) {
+    renderInit();
+
     bool visible[MAP_HEIGHT][MAP_WIDTH] = {};
     bool explored[MAP_HEIGHT][MAP_WIDTH] = {};
     std::string lastMessage = "Ready.";
 
-    while (p.hp > 0) {
-        computeVisibility(p, g_map, visible);
-        for (int r = 0; r < MAP_HEIGHT; ++r)
-            for (int c = 0; c < MAP_WIDTH; ++c)
-                if (visible[r][c]) explored[r][c] = true;
+    for (;;) {
+        computeVisibility(p.x, p.y, visible);
+        for (int y = 0; y < MAP_HEIGHT; ++y) {
+            for (int x = 0; x < MAP_WIDTH; ++x) {
+                if (visible[y][x]) explored[y][x] = true;
+            }
+        }
 
         drawMap(p, visible, explored, lastMessage);
+
+        if (p.hp <= 0) {
+            lastMessage = "You died!";
+            drawMap(p, visible, explored, lastMessage);
+            renderShutdown();
+            return GameState::Menu;
+        }
 
         Command cmd = readCommand();
         if (cmd == Command::Quit) {
             lastMessage = "Back to menu...";
+            drawMap(p, visible, explored, lastMessage);
+            renderShutdown();
             return GameState::Menu;
         }
+
         if (cmd == Command::None) {
             lastMessage = "Unknown command.";
             continue;
         }
 
-        bool moved = tryMove(p, cmd);
+        const bool moved = tryMove(p, cmd);
         if (!moved) {
             lastMessage = "Bump! You can't go there.";
         }
-        else if (g_map[p.y][p.x] == Tile::Floor) {
+        else {
             lastMessage = "Moved.";
         }
-        else {
-            lastMessage = "Action resolved.";
-        }
     }
-    std::cout << "You died! Game over.\n";
-    return GameState::Exit;
 }
