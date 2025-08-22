@@ -9,7 +9,8 @@
 #include "render.hpp"
 #include "map.hpp"
 #include "fov.hpp"
-
+#include "monsters.hpp"
+#include "monsters_db.hpp"
 
 static void greet(Player& p) {
     std::cout << "Welcome to C++ RPG!\n";
@@ -174,6 +175,9 @@ GameState runMenu(Player& p) {
 GameState runPlay(Player& p) {
     renderInit();
 
+    Monsters mons;
+    spawnMonster(mons, MAX_MONSTERS, g_map);
+
     bool visible[MAP_HEIGHT][MAP_WIDTH] = {};
     bool explored[MAP_HEIGHT][MAP_WIDTH] = {};
     std::string lastMessage = "Ready.";
@@ -186,11 +190,11 @@ GameState runPlay(Player& p) {
             }
         }
 
-        drawMap(p, visible, explored, lastMessage);
+        drawMap(p, visible, explored, lastMessage, mons);
 
         if (p.hp <= 0) {
             lastMessage = "You died!";
-            drawMap(p, visible, explored, lastMessage);
+            drawMap(p, visible, explored, lastMessage, mons);
             renderShutdown();
             return GameState::Menu;
         }
@@ -198,7 +202,7 @@ GameState runPlay(Player& p) {
         Command cmd = readCommand();
         if (cmd == Command::Quit) {
             lastMessage = "Back to menu...";
-            drawMap(p, visible, explored, lastMessage);
+            drawMap(p, visible, explored, lastMessage, mons);
             renderShutdown();
             return GameState::Menu;
         }
@@ -214,12 +218,25 @@ GameState runPlay(Player& p) {
             continue;
         }
 
-        const bool moved = tryMove(p, cmd);
-        if (!moved) {
-            lastMessage = "Bump! You can't go there.";
+        bool consumed = false;
+
+        if (cmd == Command::Up || cmd == Command::Down || cmd == Command::Left || cmd == Command::Right) {
+            consumed = playerBumpAttackOrMove(p, mons, cmd, lastMessage, g_map);
+        }
+        else if (cmd == Command::None) {
+            lastMessage = "Unknown command.";
         }
         else {
-            lastMessage = "Moved.";
+
+        }
+        if (consumed) {
+            monstersTurn(mons, p, g_map);
+            if (p.hp <= 0) {
+                lastMessage = "You died!";
+                drawMap(p, visible, explored, lastMessage, mons);
+                renderShutdown();
+                return GameState::Menu;
+            }
         }
     }
 }

@@ -3,6 +3,7 @@
 #include <string>
 #include "render.hpp"
 #include "map.hpp"
+#include "monsters.hpp"
 
 
 #ifdef _WIN32
@@ -57,7 +58,8 @@ void renderShutdown() {
 void drawMap(const Player& p,
              const bool visible[MAP_HEIGHT][MAP_WIDTH],
              const bool explored[MAP_HEIGHT][MAP_WIDTH],
-             const std::string& status) {
+             const std::string& status,
+             const Monsters& mons) {
 #ifdef _WIN32
     clearScreenAndHome();
 #else
@@ -69,7 +71,14 @@ void drawMap(const Player& p,
     for (int row = 0; row < MAP_HEIGHT; ++row) {
         for (int col = 0; col < MAP_WIDTH; ++col) {
             if (row == p.y && col == p.x) out << '@';
-            else out << glyphFor(g_map[row][col], visible[row][col], explored[row][col]);
+            else {
+                if (char mg = monsterGlyphAt(mons, col, row, visible[row][col], explored[row][col])) {
+                    out << mg;
+                }
+                else {
+                    out << glyphFor(g_map[row][col], visible[row][col], explored[row][col]);
+                }
+            }
         }
         out << '\n';
     }

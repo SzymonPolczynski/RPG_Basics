@@ -130,6 +130,8 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
+    <ClCompile Include="monsters.cpp" />
+    <ClCompile Include="monsters_db.cpp" />
     <ClCompile Include="render.cpp" />
     <ClCompile Include="RPG_Basics.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
@@ -142,6 +144,8 @@
     <ClInclude Include="fov.hpp" />
     <ClInclude Include="input.hpp" />
     <ClInclude Include="map.hpp" />
+    <ClInclude Include="monsters.hpp" />
+    <ClInclude Include="monsters_db.hpp" />
     <ClInclude Include="render.hpp" />
     <ClInclude Include="types.hpp" />
   </ItemGroup>
