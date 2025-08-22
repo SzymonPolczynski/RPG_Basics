@@ -176,7 +176,7 @@ GameState runPlay(Player& p) {
     renderInit();
 
     Monsters mons;
-    spawnMonster(mons, MAX_MONSTERS, g_map);
+    spawnMonsters(mons, MAX_MONSTERS, g_map);
 
     bool visible[MAP_HEIGHT][MAP_WIDTH] = {};
     bool explored[MAP_HEIGHT][MAP_WIDTH] = {};

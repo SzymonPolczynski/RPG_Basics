@@ -3,15 +3,17 @@
 #include "monsters_db.hpp"
 
 
-static constexpr std::array<MonsterDef, 2> DB = { {
-	{MonsterKind::Rat, "Rat", 3, 1, 'r'},
-	{MonsterKind::Goblin, "Goblin", 6, 2, 'g'}
-} };
+static const MonsterDef DB[] = {
+    { MonsterKind::Rat,    "Rat",    3, 1, 'r' },
+    { MonsterKind::Goblin, "Goblin", 6, 2, 'g' }
+};
 
-std::span<const MonsterDef> allMonstersDefs() { return DB; }
+std::span<const MonsterDef> allMonsterDefs() {
+    return { DB, std::size(DB) };
+}
 
 const MonsterDef& monsterDef(MonsterKind kind) {
-	const auto idx = static_cast<std::size_t>(kind);
-	assert(idx < DB.size());
-	return DB[idx];
+    const auto idx = static_cast<std::size_t>(kind);
+    assert(idx < std::size(DB));
+    return DB[idx];
 }

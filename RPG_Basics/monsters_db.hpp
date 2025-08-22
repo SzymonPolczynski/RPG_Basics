@@ -3,5 +3,5 @@
 #include <span>
 
 
-std::span<const MonsterDef> allMonstersDefs();
+std::span<const MonsterDef> allMonsterDefs();
 const MonsterDef& monsterDef(MonsterKind kind);

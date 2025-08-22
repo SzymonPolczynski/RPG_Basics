@@ -14,6 +14,8 @@ enum class GameState { Menu, Play, Exit };
 
 enum class Slot { Head, Chest, Weapon, Shield, Boots, Ring, Amulet, Count };
 
+enum class MonsterKind { Rat = 0, Goblin = 1 };
+
 struct Item {
     std::string name;
     Slot slot;
@@ -34,8 +36,6 @@ struct Player {
     Inventory inv;
 };
 
-enum class MonsterKind {Rat = 0, Goblin = 1};
-
 struct MonsterDef {
     MonsterKind kind;
     std::string name;
@@ -49,7 +49,7 @@ struct Monster {
     int x{ 0 };
     int y{ 0 };
     int hp{ 0 };
-    bool alive(true);
+    bool alive{ true };
 };
 
 struct Monsters {

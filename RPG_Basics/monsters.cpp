@@ -73,7 +73,7 @@ static void stepTowards(Monster& m, const Player& p, const Tile map[MAP_HEIGHT][
 	bool preferX = (irand(0, 1) == 0);
 
 	auto tryXY = [&](int nx, int ny) {
-		if (canStep(mons, map, nx, ny)) { m.x = nx; m.y = by; return true; }
+		if (canStep(mons, map, nx, ny)) { m.x = nx; m.y = ny; return true; }
 		return false;
 	};
 
@@ -95,7 +95,7 @@ static void stepTowards(Monster& m, const Player& p, const Tile map[MAP_HEIGHT][
 bool playerBumpAttackOrMove(Player& p, Monsters& mons, Command cmd, std::string& outStatus, Tile map[MAP_HEIGHT][MAP_WIDTH]) {
 	int dx = 0, dy = 0;
 	switch (cmd) {
-	case Command::UP: dy = -1; break;
+	case Command::Up: dy = -1; break;
 	case Command::Down: dy = 1; break;
 	case Command::Left: dx = -1; break;
 	case Command::Right: dx = 1; break;
@@ -161,3 +161,4 @@ void monstersTurn(Monsters& mons, Player& p, const Tile map[MAP_HEIGHT][MAP_WIDT
 			}
 		}
 	}
+}
